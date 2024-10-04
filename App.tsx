@@ -1,118 +1,67 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
-import type {PropsWithChildren} from 'react';
 import {
-  SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
+  TouchableOpacity,
   useColorScheme,
   View,
 } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {generateColorPalette, Palette} from './util';
+import PaletteList from './components/PaletteList';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const App = () => {
+  useColorScheme() === 'dark';
+  const [palette, setPalette] = useState<Palette>([]);
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  useEffect(() => {
+    fetchRandomPalette();
+  }, []);
+  const fetchRandomPalette = () => {
+    const fetchedPalette = generateColorPalette();
+    fetchedPalette.length === 5 && setPalette(fetchedPalette);
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
+    <ScrollView style={styles.container}>
+      <TouchableOpacity
+        onPress={fetchRandomPalette}
+        style={styles.generateButton}>
+        <Text
           style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
+            fontSize: 35,
+            fontWeight: '900',
+            textAlign: 'center',
+            color: 'black',
           }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+          +
+        </Text>
+      </TouchableOpacity>
+      {palette && <PaletteList palette={palette} />}
+    </ScrollView>
   );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+};
 
 export default App;
+
+const styles = StyleSheet.create({
+  container: {
+    height: '100%',
+  },
+  generateButton: {
+    position: 'absolute',
+    zIndex: 100,
+    bottom: -400,
+    right: 20,
+    backgroundColor: 'white',
+    padding: 5,
+    height: 60,
+    width: 60,
+    borderRadius: 1000,
+    shadowColor: 'white',
+    shadowRadius: 200,
+    shadowOpacity: 100,
+    elevation: 200,
+    borderWidth: 1,
+  },
+});
